@@ -66,9 +66,7 @@ async function loadCloudForUser(user){
         const localData=JSON.parse(localRaw);
         const hasLocal=localData && ((localData.machines?.length||0)+(localData.services?.length||0)+(localData.templates?.length||0)+(localData.models?.length||0));
         if(hasLocal){
-          const importIt=confirm("No Beam Tracker cloud data exists for this account. Import the data currently saved on this device into Firebase?
-
-Choose Cancel to start with an empty cloud database.");
+          const importIt=confirm("No Beam Tracker cloud data exists for this account. Import the data currently saved on this device into Firebase?\n\nChoose Cancel to start with an empty cloud database.");
           if(importIt){data={...defaultData,...localData};cloudLoading=false;await cloudSave();cloudLoading=true;}
           else {data=structuredClone(defaultData);localSave();cloudLoading=false;await cloudSave();cloudLoading=true;}
         } else {data=structuredClone(defaultData);localSave();cloudLoading=false;await cloudSave();cloudLoading=true;}
