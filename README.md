@@ -1,17 +1,20 @@
-# Beam Tracker v0.3
+# Beam Tracker V0.3
 
-Machine service, inspection, labor, and historical tracking PWA.
+V0.3 is based directly on the working V0.2 files.
 
-## V0.3
-- Checkbox-based inspection items
-- Item-level detail/notes
-- Overall inspection notes
-- Inspection results saved with each service visit
-- Existing V0.1/V0.2 local data retained
-- Model presets can automatically load the linked inspection template
+## V0.3 changes
+- Fixed JavaScript initialization bug that could make all buttons appear unresponsive on a fresh browser.
+- Inspection items now have checkboxes.
+- Each inspection item has a details/notes box.
+- Needs Repair and N/A can still be marked when applicable.
+- Inspection results remain attached to the service visit and appear in machine history.
+- Browser local storage remains the data store for this prototype.
 
-## Run
-Open `index.html` in a modern browser.
+## How to use
+1. Open `index.html` in Chrome or deploy the folder to GitHub Pages.
+2. Create an inspection template.
+3. Create a model rule, such as `S26 -> Husqvarna -> Concrete Saw -> S26 Inspection`.
+4. Start a new service and type `S26`.
+5. Complete the inspection, enter details where needed, record labor/work performed, and save.
 
-## Publish
-Upload the files to the `main` branch of the GitHub Pages repository.
+No Firebase connection is required for this version.
