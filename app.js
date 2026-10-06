@@ -5,6 +5,8 @@ let cloudReady=false;
 let cloudSaveTimer=null;
 let cloudLoading=false;
 
+const KEY='machineServiceLogV02';
+const OLD='machineServiceLogV01';
 const localSave=()=>localStorage.setItem(KEY,JSON.stringify(data));
 async function cloudSave(){
   if(!firebaseUser || cloudLoading) return;
@@ -122,8 +124,6 @@ onAuthStateChanged(auth,user=>{
   else {showAuth();setSyncStatus("");}
 });
 
-const KEY='machineServiceLogV02';
-const OLD='machineServiceLogV01';
 const defaultData={manufacturers:['Husqvarna','Wacker Neuson','Allen Engineering','Somero','Multiquip'],machineTypes:['Concrete Saw','Ride-On Trowel','Walk-Behind Trowel','Power Buggy','Screed','Grinder','Generator'],companies:[],models:[],templates:[],machines:[],services:[]};
 let data=JSON.parse(localStorage.getItem(KEY)||'null');
 if(!data){const old=JSON.parse(localStorage.getItem(OLD)||'null');data=old?{...defaultData,...old,templates:[],services:(old.services||[]).map(s=>({...s,inspectionResults:s.inspectionResults||[]}))}:structuredClone(defaultData);save();}
