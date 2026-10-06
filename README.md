@@ -1,20 +1,10 @@
-# Beam Tracker V0.3
+# Beam Tracker V0.4
 
-V0.3 is based directly on the working V0.2 files.
-
-## V0.3 changes
-- Fixed JavaScript initialization bug that could make all buttons appear unresponsive on a fresh browser.
-- Inspection items now have checkboxes.
-- Each inspection item has a details/notes box.
-- Needs Repair and N/A can still be marked when applicable.
-- Inspection results remain attached to the service visit and appear in machine history.
-- Browser local storage remains the data store for this prototype.
-
-## How to use
-1. Open `index.html` in Chrome or deploy the folder to GitHub Pages.
-2. Create an inspection template.
-3. Create a model rule, such as `S26 -> Husqvarna -> Concrete Saw -> S26 Inspection`.
-4. Start a new service and type `S26`.
-5. Complete the inspection, enter details where needed, record labor/work performed, and save.
-
-No Firebase connection is required for this version.
+- Persistent machine status: Received, Inspection, Maintenance, Waiting for Parts, Ready, Complete, Out of Service.
+- Change status directly from a machine record.
+- Select an inspection template manually for a service visit.
+- Model auto-fill still selects the default inspection template.
+- Manual inspection selection overrides the model default.
+- Inspection items support checkbox, Needs Repair, N/A, and details.
+- Inspection results and selected template are saved with each service visit.
+- Data remains in browser local storage for this prototype.
