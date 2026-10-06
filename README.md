@@ -1,18 +1,22 @@
-# Machine Service Log v0.1
+# Machine Service Log v0.2
 
-Standalone PWA prototype for mechanic machine service history.
+V0.2 adds editable inspection templates and links them to model presets.
 
-## V0.1 features
-- Machine/unit database keyed by unit number
-- Service visits and daily labor hours
-- Machine history lookup
-- Presets for manufacturers, machine types, and companies
-- Model rules that auto-fill manufacturer, machine type, and inspection template name
-- Local browser storage
-- Installable PWA shell
+## Main features
+- Machine/unit history
+- Service visits and labor hours
+- Manufacturer, machine type, company and model presets
+- Model auto-fill rules
+- Inspection template builder
+- Inspection results saved with each service visit
+- Inspection result history shown on the machine record
+- PWA install support
 
-## Run
-Serve this folder from a local web server (required for service-worker/PWA behavior), for example with VS Code Live Server or `python -m http.server`.
+## How to use
+1. Open `index.html` in Chrome.
+2. Go to **Inspections** and create the inspection sheet used for a machine.
+3. Go to **Presets** and create a model rule, such as `S26 -> Husqvarna -> Concrete Saw -> S26 Inspection`.
+4. Start a new service and type `S26`. The related fields and inspection template will load.
+5. Record inspection results, labor and work performed, then save.
 
-## Next
-Firebase sync, inspection template/checklist builder, photos, parts, attachments, reports, and multi-user access.
+Data is stored in browser local storage for this prototype. Existing V0.1 local data is migrated when the app first opens.
