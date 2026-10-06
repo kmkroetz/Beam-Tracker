@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111827"><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css">
-<title>Beam Tracker v0.4</title>
+<title>Beam Tracker v0.6</title>
 </head>
 <body>
-<header><div><h1>Beam Tracker</h1><span>v0.4</span></div><button id="installBtn" class="secondary" hidden>Install</button></header>
+<section id="authPanel" class="auth-panel"><div class="auth-card"><h1>Beam Tracker</h1><p class="muted">Sign in to sync your machine service history across your phone and computer.</p><label>Email<input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com"></label><label>Password<input id="authPassword" type="password" autocomplete="current-password" placeholder="Password"></label><div class="actions"><button class="primary" onclick="login()">Sign In</button><button class="secondary" onclick="createAccount()">Create Account</button></div><div id="authMessage" class="auth-message"></div></div></section>
+<div id="appShell" class="hidden"><header><div><h1>Beam Tracker</h1><span>v0.6 · Firebase</span></div><div class="header-actions"><span id="syncStatus" class="sync-status">Cloud connecting…</span><span id="userEmail" class="user-email"></span><button class="secondary" onclick="logout()">Sign Out</button><button id="installBtn" class="secondary" hidden>Install</button></div></header>
 <nav><button data-view="dashboard" class="nav active">Dashboard</button><button data-view="machines" class="nav">Machines</button><button data-view="new" class="nav">New Service</button><button data-view="presets" class="nav">Presets</button><button data-view="inspections" class="nav">Inspections</button></nav>
 <main>
 <section id="dashboard" class="view active"><div class="hero"><div><h2>Service Dashboard</h2><p>Track machines, inspections, labor, and service history.</p></div><button class="primary" onclick="showView('new')">+ New Service</button></div><div class="cards"><div class="card"><b id="machineCount">0</b><span>Machines</span></div><div class="card"><b id="activeCount">0</b><span>Active Services</span></div><div class="card"><b id="hoursCount">0.0</b><span>Labor Hours</span></div><div class="card"><b id="inspectionCount">0</b><span>Inspections</span></div></div><div class="panel"><h3>Recent Service / Open Work</h3><div id="recentList" class="list"></div></div></section>
@@ -27,6 +28,6 @@
 </div></section>
 <section id="inspections" class="view"><div class="hero"><div><h2>Inspection Templates</h2><p>Build the inspection sheets you already use at work.</p></div><button class="primary" onclick="newTemplateForm()">+ New Template</button></div><div id="templateEditor" class="panel hidden"></div><div id="templateList" class="template-list"></div></section>
 <section id="detail" class="view"><div id="detailContent"></div></section>
-</main><div id="toast" class="toast"></div>
-<script src="app.js"></script><script>if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');</script>
+</main><div id="toast" class="toast"></div></div>
+<script type="module" src="app.js"></script><script>if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');</script>
 </body></html>

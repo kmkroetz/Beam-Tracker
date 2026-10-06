@@ -1,7 +1,121 @@
+import { auth, db, doc, getDoc, setDoc, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "./firebase.js";
+
+let firebaseUser=null;
+let cloudReady=false;
+let cloudSaveTimer=null;
+let cloudLoading=false;
+
+const localSave=()=>localStorage.setItem(KEY,JSON.stringify(data));
+async function cloudSave(){
+  if(!firebaseUser || cloudLoading) return;
+  try {
+    await setDoc(doc(db,"users",firebaseUser.uid,"app","state"),{data,updatedAt:new Date().toISOString()});
+    cloudReady=true;
+    setSyncStatus("Cloud saved");
+  } catch(err){
+    console.error(err);
+    setSyncStatus("Cloud save failed: "+(err.message||"Unknown error"),true);
+  }
+}
+function save(){
+  localSave();
+  if(firebaseUser){
+    clearTimeout(cloudSaveTimer);
+    cloudSaveTimer=setTimeout(cloudSave,250);
+  }
+}
+function setSyncStatus(msg,error=false){
+  const el=document.getElementById("syncStatus");
+  if(el){el.textContent=msg||"";el.classList.toggle("error",!!error);}
+}
+function setAuthMessage(msg,error=false){
+  const el=document.getElementById("authMessage");
+  if(el){el.textContent=msg||"";el.classList.toggle("error",!!error);}
+}
+function showAppForUser(user){
+  const authPanel=document.getElementById("authPanel"), appShell=document.getElementById("appShell"), userEmail=document.getElementById("userEmail");
+  if(authPanel) authPanel.classList.add("hidden");
+  if(appShell) appShell.classList.remove("hidden");
+  if(userEmail) userEmail.textContent=user?.email||"";
+}
+function showAuth(){
+  const authPanel=document.getElementById("authPanel"), appShell=document.getElementById("appShell");
+  if(authPanel) authPanel.classList.remove("hidden");
+  if(appShell) appShell.classList.add("hidden");
+}
+async function loadCloudForUser(user){
+  cloudLoading=true;
+  setSyncStatus("Loading cloud data…");
+  try {
+    const ref=doc(db,"users",user.uid,"app","state");
+    const snap=await getDoc(ref);
+    if(snap.exists() && snap.data().data){
+      data={...defaultData,...snap.data().data};
+      data.templates ||= []; data.models ||= []; data.services ||= []; data.machines ||= [];
+      data.services.forEach(s=>{
+        if(!Array.isArray(s.workLogs)){s.workLogs=[];if(s.workDate||s.hours||s.workDescription)s.workLogs.push({id:crypto.randomUUID(),date:s.workDate||today(),hours:Number(s.hours||0),description:s.workDescription||''});}
+        s.workLogs.forEach(l=>l.hours=Number(l.hours||0));
+      });
+      localSave();
+      setSyncStatus("Cloud data loaded");
+    } else {
+      const localRaw=localStorage.getItem(KEY);
+      if(localRaw){
+        const localData=JSON.parse(localRaw);
+        const hasLocal=localData && ((localData.machines?.length||0)+(localData.services?.length||0)+(localData.templates?.length||0)+(localData.models?.length||0));
+        if(hasLocal){
+          const importIt=confirm("No Beam Tracker cloud data exists for this account. Import the data currently saved on this device into Firebase?
+
+Choose Cancel to start with an empty cloud database.");
+          if(importIt){data={...defaultData,...localData};cloudLoading=false;await cloudSave();cloudLoading=true;}
+          else {data=structuredClone(defaultData);localSave();cloudLoading=false;await cloudSave();cloudLoading=true;}
+        } else {data=structuredClone(defaultData);localSave();cloudLoading=false;await cloudSave();cloudLoading=true;}
+      } else {data=structuredClone(defaultData);localSave();cloudLoading=false;await cloudSave();cloudLoading=true;}
+    }
+    render();
+  } catch(err){
+    console.error(err);
+    setSyncStatus("Cloud load failed — using local copy",true);
+    render();
+  } finally {cloudLoading=false;}
+}
+
+async function login(){
+  const email=document.getElementById("authEmail")?.value.trim();
+  const password=document.getElementById("authPassword")?.value||"";
+  if(!email||!password)return setAuthMessage("Enter your email and password.",true);
+  setAuthMessage("Signing in…");
+  try{await signInWithEmailAndPassword(auth,email,password);setAuthMessage("");}
+  catch(err){setAuthMessage(authError(err),true);}
+}
+async function createAccount(){
+  const email=document.getElementById("authEmail")?.value.trim();
+  const password=document.getElementById("authPassword")?.value||"";
+  if(!email||!password)return setAuthMessage("Enter an email and password. Password must be at least 6 characters.",true);
+  setAuthMessage("Creating account…");
+  try{await createUserWithEmailAndPassword(auth,email,password);setAuthMessage("");}
+  catch(err){setAuthMessage(authError(err),true);}
+}
+function authError(err){
+  const code=err?.code||"";
+  if(code.includes("invalid-credential")||code.includes("wrong-password")||code.includes("user-not-found"))return "Email or password is incorrect.";
+  if(code.includes("email-already-in-use"))return "That email already has an account. Use Sign In.";
+  if(code.includes("weak-password"))return "Password must be at least 6 characters.";
+  if(code.includes("invalid-email"))return "Enter a valid email address.";
+  return err?.message||"Authentication failed.";
+}
+window.login=login; window.createAccount=createAccount;
+window.logout=async()=>{try{await signOut(auth);}catch(err){console.error(err);}};
+
+onAuthStateChanged(auth,user=>{
+  firebaseUser=user;
+  if(user){showAppForUser(user);loadCloudForUser(user);}
+  else {showAuth();setSyncStatus("");}
+});
+
 const KEY='machineServiceLogV02';
 const OLD='machineServiceLogV01';
 const defaultData={manufacturers:['Husqvarna','Wacker Neuson','Allen Engineering','Somero','Multiquip'],machineTypes:['Concrete Saw','Ride-On Trowel','Walk-Behind Trowel','Power Buggy','Screed','Grinder','Generator'],companies:[],models:[],templates:[],machines:[],services:[]};
-const save=()=>localStorage.setItem(KEY,JSON.stringify(data));
 let data=JSON.parse(localStorage.getItem(KEY)||'null');
 if(!data){const old=JSON.parse(localStorage.getItem(OLD)||'null');data=old?{...defaultData,...old,templates:[],services:(old.services||[]).map(s=>({...s,inspectionResults:s.inspectionResults||[]}))}:structuredClone(defaultData);save();}
 data.templates ||= []; data.models ||= []; data.services ||= []; data.machines ||= [];
@@ -73,4 +187,6 @@ function removeTemplate(i){if(!confirm('Delete this inspection template? Existin
 function cancelTemplateEdit(){$('templateEditor').classList.add('hidden');$('templateEditor').innerHTML='';}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}function toast(s){let t=$('toast');t.textContent=s;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
 let deferred;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;$('installBtn').hidden=false});$('installBtn').onclick=async()=>{if(deferred){deferred.prompt();deferred=null}};
+// Keep the existing V0.5 inline buttons working after app.js becomes an ES module.
+Object.assign(window,{showView,addPreset,removePreset,addModel,removeModel,newTemplateForm,editTemplate,addTemplateItem,removeTemplateItem,saveTemplate,cancelTemplateEdit,removeTemplate,showMachine,continueInspection,addDailyLog,completeService,saveMachineStatus});
 render();

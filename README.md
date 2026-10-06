@@ -1,17 +1,34 @@
-# Beam Tracker V0.4.1
+# Beam Tracker v0.6
 
-- Persistent machine status: Received, Inspection, Maintenance, Waiting for Parts, Ready, Complete, Out of Service.
-- Change status directly from a machine record.
-- Select an inspection template manually for a service visit.
-- Model auto-fill still selects the default inspection template.
-- Manual inspection selection overrides the model default.
-- Inspection items support checkbox, Needs Repair, N/A, and details.
-- Inspection results and selected template are saved with each service visit.
-- Data remains in browser local storage for this prototype.
+Firebase cloud version of Beam Tracker, built from the tested v0.5 workflow.
 
+## What changed
+- Firebase Authentication with email/password sign-in.
+- Cloud Firestore stores the Beam Tracker data under the signed-in user's account.
+- Local device storage remains as a safety cache.
+- First sign-in on a device can import the existing V0.5 local data into the new Firebase account.
+- Firestore IndexedDB persistence is enabled when the browser supports it, so the app can continue working with cached data when connectivity is unavailable.
+- Existing V0.5 workflow is preserved: one open service visit per machine, multiple daily work logs, resumable inspections, machine status, and permanent history.
 
-## V0.4.1
-- Inspections can be saved partially and continued later.
-- Inspection progress shows Not Started, In Progress, or Complete with item counts.
-- Service history includes a Continue Inspection button for unfinished inspections.
-- Continuing an inspection updates the original service visit instead of creating a duplicate visit.
+## Firebase setup
+1. In Firebase Console, enable **Authentication → Sign-in method → Email/Password**.
+2. Create **Cloud Firestore Database**.
+3. Apply the rules in `firestore.rules`:
+
+```text
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+```
+
+4. Open the app from GitHub Pages over HTTPS.
+5. Create your Beam Tracker account, then use **Create Account**.
+6. If this is the device containing your V0.5 records, choose **Import** when the app asks.
+
+## Important
+The Firebase web configuration is client-side configuration; the Firestore security rules are what restrict database access to the authenticated user's own data.
