@@ -1,22 +1,17 @@
-# Machine Service Log v0.2
+# Beam Tracker v0.3
 
-V0.2 adds editable inspection templates and links them to model presets.
+Machine service, inspection, labor, and historical tracking PWA.
 
-## Main features
-- Machine/unit history
-- Service visits and labor hours
-- Manufacturer, machine type, company and model presets
-- Model auto-fill rules
-- Inspection template builder
+## V0.3
+- Checkbox-based inspection items
+- Item-level detail/notes
+- Overall inspection notes
 - Inspection results saved with each service visit
-- Inspection result history shown on the machine record
-- PWA install support
+- Existing V0.1/V0.2 local data retained
+- Model presets can automatically load the linked inspection template
 
-## How to use
-1. Open `index.html` in Chrome.
-2. Go to **Inspections** and create the inspection sheet used for a machine.
-3. Go to **Presets** and create a model rule, such as `S26 -> Husqvarna -> Concrete Saw -> S26 Inspection`.
-4. Start a new service and type `S26`. The related fields and inspection template will load.
-5. Record inspection results, labor and work performed, then save.
+## Run
+Open `index.html` in a modern browser.
 
-Data is stored in browser local storage for this prototype. Existing V0.1 local data is migrated when the app first opens.
+## Publish
+Upload the files to the `main` branch of the GitHub Pages repository.

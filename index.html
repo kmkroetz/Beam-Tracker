@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111827"><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css">
-<title>Machine Service Log v0.2</title>
+<title>Beam Tracker v0.3</title>
 </head>
 <body>
-<header><div><h1>Machine Service Log</h1><span>v0.2</span></div><button id="installBtn" class="secondary" hidden>Install</button></header>
+<header><div><h1>Beam Tracker</h1><span>v0.3</span></div><button id="installBtn" class="secondary" hidden>Install</button></header>
 <nav><button data-view="dashboard" class="nav active">Dashboard</button><button data-view="machines" class="nav">Machines</button><button data-view="new" class="nav">New Service</button><button data-view="presets" class="nav">Presets</button><button data-view="inspections" class="nav">Inspections</button></nav>
 <main>
 <section id="dashboard" class="view active"><div class="hero"><div><h2>Service Dashboard</h2><p>Track machines, inspections, labor, and service history.</p></div><button class="primary" onclick="showView('new')">+ New Service</button></div><div class="cards"><div class="card"><b id="machineCount">0</b><span>Machines</span></div><div class="card"><b id="activeCount">0</b><span>Active Services</span></div><div class="card"><b id="hoursCount">0.0</b><span>Labor Hours</span></div><div class="card"><b id="inspectionCount">0</b><span>Inspections</span></div></div><div class="panel"><h3>Recent Service</h3><div id="recentList" class="list"></div></div></section>
@@ -16,7 +16,7 @@
 <div class="grid"><label>Model Number *<input id="model" required placeholder="e.g. S26"></label><label>Manufacturer<select id="manufacturer"><option value="">Select manufacturer</option></select></label><label>Machine Type<select id="machineType"><option value="">Select machine type</option></select></label><label>Serial Number<input id="serial" placeholder="Optional"></label><label>Company Returned By<select id="company"><option value="">Select company</option></select></label><label>Engine Hours<input id="engineHours" type="number" min="0" step="0.1" placeholder="0"></label></div>
 <div id="templateNotice" class="template-notice hidden"></div>
 <label>Date Received<input id="date" type="date" required></label><label>Machine Description<textarea id="description" placeholder="General description / condition"></textarea></label>
-<div id="inspectionArea" class="inspection-area hidden"><div class="sectionhead"><div><h3>Inspection</h3><p id="inspectionTemplateName" class="muted"></p></div><span id="inspectionSummary" class="badge">0 / 0</span></div><div id="inspectionForm"></div></div>
+<div id="inspectionArea" class="inspection-area hidden"><div class="sectionhead"><div><h3>Inspection</h3><p id="inspectionTemplateName" class="muted"></p></div><span id="inspectionSummary" class="badge">0 / 0</span></div><div id="inspectionForm"></div><label class="overall-notes-label">Overall Inspection Notes<textarea id="inspectionOverallNotes" placeholder="Add overall inspection details, findings, recommendations, or anything else worth recording..."></textarea></label></div>
 <div class="workbox"><h3>Work Entry</h3><div class="grid"><label>Date<input id="workDate" type="date" required></label><label>Hours Worked<input id="hours" type="number" min="0" step="0.25" required placeholder="0"></label></div><label>Work Performed<textarea id="workDescription" required placeholder="Describe repairs, adjustments, parts replaced, etc."></textarea></label></div>
 <div class="actions"><button type="button" class="secondary" onclick="showView('dashboard')">Cancel</button><button class="primary">Save Service Visit</button></div></form></section>
 <section id="presets" class="view"><div class="hero"><div><h2>Presets</h2><p>Set up manufacturers, machine types, companies, and model auto-fill rules.</p></div></div><div class="preset-grid">
