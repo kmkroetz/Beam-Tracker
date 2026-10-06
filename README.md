@@ -1,4 +1,4 @@
-# Beam Tracker v0.6
+# Beam Tracker v0.6.1
 
 Firebase cloud version of Beam Tracker, built from the tested v0.5 workflow.
 
@@ -32,3 +32,7 @@ service cloud.firestore {
 
 ## Important
 The Firebase web configuration is client-side configuration; the Firestore security rules are what restrict database access to the authenticated user's own data.
+
+## V0.6.1 fix
+- Fixed Create Account / Sign In buttons to use explicit module event listeners instead of relying only on inline onclick handlers.
+- Updated service-worker cache version.

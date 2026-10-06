@@ -105,6 +105,15 @@ function authError(err){
   return err?.message||"Authentication failed.";
 }
 window.login=login; window.createAccount=createAccount;
+
+// Auth buttons use explicit event listeners so they work reliably from an ES module.
+document.getElementById("signInBtn")?.addEventListener("click", login);
+document.getElementById("createAccountBtn")?.addEventListener("click", createAccount);
+
+// Allow Enter from the password field to submit the sign-in form.
+document.getElementById("authPassword")?.addEventListener("keydown", e=>{
+  if(e.key === "Enter") login();
+});
 window.logout=async()=>{try{await signOut(auth);}catch(err){console.error(err);}};
 
 onAuthStateChanged(auth,user=>{
